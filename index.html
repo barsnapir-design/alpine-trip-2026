@@ -1,0 +1,599 @@
+<!DOCTYPE html>
+<html lang="he">
+<head>
+<meta charset="utf-8" />
+<title>טיול אופנועי Adventure באלפים — 11–15.6.2026</title>
+<style>
+  :root { color-scheme: light; }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, system-ui, sans-serif;
+    background: #f7f5f1;
+    color: #1d1d1f;
+    line-height: 1.55;
+  }
+  .wrap { max-width: 1180px; margin: 0 auto; padding: 28px 22px 80px; }
+  header {
+    display: flex; flex-direction: column; gap: 6px;
+    border-bottom: 1px solid #e6e2db;
+    padding-bottom: 18px; margin-bottom: 22px;
+  }
+  h1 { font-size: 28px; margin: 0; letter-spacing: -0.01em; }
+  .sub { color: #6b6760; font-size: 14px; }
+  .dates-pill {
+    display: inline-block; background: #1d1d1f; color: #fff;
+    padding: 3px 10px; border-radius: 999px; font-size: 12px; margin-top: 6px;
+    width: fit-content;
+  }
+
+  .tabs {
+    display: flex; gap: 2px; margin: 22px 0 16px; flex-wrap: wrap;
+    background: #ece8e0; padding: 4px; border-radius: 12px; width: fit-content;
+  }
+  .tabs button {
+    border: 0; background: transparent; padding: 8px 14px; border-radius: 9px;
+    cursor: pointer; font-size: 14px; color: #4a463f; font-weight: 500;
+  }
+  .tabs button.active { background: #fff; color: #1d1d1f; box-shadow: 0 1px 2px rgba(0,0,0,.06); }
+
+  section.panel { display: none; }
+  section.panel.active { display: block; }
+
+  .card {
+    background: #fff; border: 1px solid #e6e2db; border-radius: 14px;
+    padding: 18px 20px; margin-bottom: 14px;
+  }
+  .card h3 { margin: 0 0 6px; font-size: 17px; }
+  .card .meta { color: #6b6760; font-size: 13px; margin-bottom: 10px; }
+  .row { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 14px; }
+  .kv { display: flex; gap: 8px; font-size: 13px; padding: 4px 0; }
+  .kv b { color: #4a463f; min-width: 110px; }
+  .tag {
+    display: inline-block; padding: 2px 8px; border-radius: 6px;
+    font-size: 11px; font-weight: 600; margin-inline-end: 4px;
+  }
+  .tag.win { background: #def3e3; color: #1d6638; }
+  .tag.warn { background: #fff1c2; color: #6b5400; }
+  .tag.miss { background: #fde4e0; color: #8a2e1f; }
+  .tag.info { background: #e1ecf7; color: #134f8a; }
+  .tag.gray { background: #ece8e0; color: #4a463f; }
+
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  th, td { padding: 9px 10px; text-align: start; vertical-align: top; border-bottom: 1px solid #e6e2db; }
+  th { background: #f3efe7; font-weight: 600; color: #4a463f; }
+  td.num { font-variant-numeric: tabular-nums; }
+
+  a { color: #134f8a; text-decoration: none; }
+  a:hover { text-decoration: underline; }
+
+  .day-strip {
+    display: grid; grid-template-columns: 80px 1fr; gap: 16px; align-items: start;
+  }
+  .day-num {
+    background: linear-gradient(135deg, #1d1d1f, #3a3a3f); color: #fff;
+    padding: 12px; border-radius: 12px; text-align: center;
+  }
+  .day-num .d { font-size: 22px; font-weight: 700; line-height: 1; }
+  .day-num .l { font-size: 10px; letter-spacing: .1em; text-transform: uppercase; opacity: .75; margin-top: 4px; }
+
+  .price-line { display: flex; justify-content: space-between; font-size: 13px; padding: 3px 0; }
+  .total-est {
+    background: #1d1d1f; color: #fff; padding: 12px 16px;
+    border-radius: 10px; font-size: 14px; margin-top: 10px;
+    display: flex; justify-content: space-between;
+  }
+
+  .status-bar {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 10px;
+    margin-bottom: 18px;
+  }
+  .status-card {
+    background: #fff; border: 1px solid #e6e2db; border-radius: 12px; padding: 12px 14px;
+  }
+  .status-card .label { font-size: 11px; text-transform: uppercase; letter-spacing: .08em; color: #6b6760; }
+  .status-card .value { font-size: 15px; font-weight: 600; margin-top: 4px; }
+  .dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-inline-end: 6px; vertical-align: middle; }
+  .dot.green { background: #1d6638; }
+  .dot.yellow { background: #d4a017; }
+  .dot.red { background: #8a2e1f; }
+  .dot.gray { background: #9a9690; }
+
+  details summary { cursor: pointer; font-weight: 600; padding: 6px 0; color: #4a463f; }
+  details[open] summary { color: #1d1d1f; }
+
+  pre.email {
+    background: #f3efe7; border-radius: 8px; padding: 12px 14px; font-size: 12px;
+    white-space: pre-wrap; word-wrap: break-word; color: #2a2a2f;
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace; line-height: 1.5;
+    max-height: 360px; overflow: auto;
+  }
+
+  .hot-tip {
+    background: #fff8df; border: 1px solid #f0e2a3; border-radius: 10px;
+    padding: 10px 14px; font-size: 13px; color: #5a4900; margin: 10px 0;
+  }
+
+  .pill-link {
+    display: inline-block; background: #1d1d1f; color: #fff; padding: 6px 12px;
+    border-radius: 8px; font-size: 12px; margin-top: 6px;
+  }
+  .pill-link:hover { background: #3a3a3f; text-decoration: none; }
+  .pill-link.ghost { background: transparent; color: #1d1d1f; border: 1px solid #1d1d1f; }
+
+  footer { color: #6b6760; font-size: 12px; margin-top: 30px; text-align: center; }
+
+  @media (max-width: 600px) {
+    .day-strip { grid-template-columns: 1fr; }
+    .day-num { width: fit-content; padding: 8px 12px; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap" dir="rtl">
+  <header>
+    <h1>טיול Adventure באלפים — 3 רוכבים</h1>
+    <div class="sub">מינכן → טירול → גרוסגלוקנר → אכנזה → מינכן · BMW R 1300 GS</div>
+    <div class="dates-pill">חמישי 11.6.2026 — שני 15.6.2026 · 5 ימים, 4 לילות</div>
+  </header>
+
+  <div class="status-bar">
+    <div class="status-card">
+      <div class="label">אופנועים</div>
+      <div class="value"><span class="dot green"></span>Rent-a-Boxer אישרו 3×R 1300 GS</div>
+    </div>
+    <div class="status-card">
+      <div class="label">טיסות</div>
+      <div class="value"><span class="dot gray"></span>בתהליך — תעדכן כשתסגור</div>
+    </div>
+    <div class="status-card">
+      <div class="label">מלונות</div>
+      <div class="value"><span class="dot yellow"></span>טיוטות מוכנות, ממתין לאישור טיסה</div>
+    </div>
+    <div class="status-card">
+      <div class="label">מסלול ימי</div>
+      <div class="value"><span class="dot green"></span>מתוכנן · 3–4.5 שעות רכיבה/יום</div>
+    </div>
+  </div>
+
+  <div class="hot-tip">
+    <b>שורה תחתונה:</b> Rent-a-Boxer הם הכי קרובים לסגירה — הם היחידים שכבר אישרו זמינות 3× BMW R 1300 GS. בטיוטות יש לך מייל follow-up שמבקש את כל הפרטים הסופיים (מחיר, ביטוח, פיקדון). פתיחת Grossglockner מ-1 ביוני בשעות 5:30–21:00, אגרת אופנוע €36.50/יום. אגרת Gerlos €9/יום.
+  </div>
+
+  <div class="tabs" role="tablist">
+    <button class="active" data-tab="route">מסלול יומי</button>
+    <button data-tab="bikes">אופנועים</button>
+    <button data-tab="hotels">מלונות</button>
+    <button data-tab="drafts">טיוטות מייל</button>
+    <button data-tab="costs">תקציב</button>
+    <button data-tab="info">מידע חשוב</button>
+  </div>
+
+  <!-- ROUTE -->
+  <section class="panel active" id="route">
+    <div class="card">
+      <div class="day-strip">
+        <div class="day-num"><div class="d">1</div><div class="l">חמ׳ 11.6</div></div>
+        <div>
+          <h3>מינכן → Tegernsee → Achensee → Kitzbühel / St. Johann in Tirol</h3>
+          <div class="meta">~180 ק״מ · רכיבה נטו 2.5–3.5 שעות · יום פתיחה רגוע</div>
+          <p style="margin: 8px 0; font-size: 14px;">איסוף אופנועים במינכן, יציאה דרומה ל-Tegernsee, עצירת קפה באגם. ממשיכים מזרחה ל-Achensee (Tirol's largest lake), עצירת צילום. כניסה לאוסטריה דרך אזור Jenbach, ומשם דרך עמק ה-Inn ל-Kitzbühel או St. Johann.</p>
+          <div class="kv"><b>עצירות מומלצות:</b> Tegernsee promenade · Achensee Pertisau · Panoramarestaurant Kanzelkehre</div>
+          <div class="kv"><b>לינה:</b> St. Johann in Tirol (אווירה כפרית, פחות תיירותי מקיצבוהל) או Kitzbühel</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="day-strip">
+        <div class="day-num"><div class="d">2</div><div class="l">שי׳ 12.6</div></div>
+        <div>
+          <h3>St. Johann → Krimml Waterfalls → Gerlos Alpine Road → Zell am See / Kaprun</h3>
+          <div class="meta">~150 ק״מ · רכיבה נטו 3–4 שעות · מפלים + כביש אלפיני</div>
+          <p style="margin: 8px 0; font-size: 14px;">נסיעה דרך Mittersill לעבר מפלי Krimml — מפלים הכי גבוהים באירופה (380m). עצירה ארוכה למסלול ההליכה. אחר כך עולים על כביש Gerlos (אגרת €9) — אחד הכבישים האלפיניים היפים, פחות מוכר מגרוסגלוקנר. נחיתה ב-Zell am See או Kaprun לטיילת ערב על האגם.</p>
+          <div class="kv"><b>עצירות מומלצות:</b> Krimml Wasserfälle (פתוח 9:00–17:00) · Gerlos Pass viewpoint · Zeller See promenade</div>
+          <div class="kv"><b>אגרות:</b> Gerlos Alpenstraße — €9/אופנוע/יום</div>
+          <div class="kv"><b>לינה:</b> Kaprun (Vötter's MoHo biker hotel) או Zell am See</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="day-strip">
+        <div class="day-num"><div class="d">3</div><div class="l">שב׳ 13.6</div></div>
+        <div>
+          <h3>Kaprun → Sigmund Thun Klamm → Grossglockner High Alpine Road → Heiligenblut / Lienz</h3>
+          <div class="meta">~110 ק״מ · רכיבה נטו 3.5–5 שעות · <b>יום השיא</b></div>
+          <p style="margin: 8px 0; font-size: 14px;">בוקר — Sigmund Thun Klamm (קניון מים, 9:00–17:30), עצירה של ~45 דקות. אחר כך הכביש האייקוני: Grossglockner Hochalpenstraße. 48 ק״מ של פיתולים, תצפיות, ופאסים עד 2,504m. עצירת חובה ב-Kaiser-Franz-Josefs-Höhe (תצפית על הקרחון). יורדים ל-Heiligenblut לאחר הצהריים.</p>
+          <div class="kv"><b>שעות פתיחה Grossglockner:</b> 5:30–21:00 (1.6–31.8) — תכננו לעלות בוקר מאוחר כדי להימנע מצפיפות צהריים</div>
+          <div class="kv"><b>אגרות:</b> €36.50/אופנוע/יום (אונליין מראש €33.50)</div>
+          <div class="kv"><b>לינה:</b> Heiligenblut (קטן ושקט, נוף הררי) או Lienz (קצת יותר עירוני)</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="day-strip">
+        <div class="day-num"><div class="d">4</div><div class="l">א׳ 14.6</div></div>
+        <div>
+          <h3>Heiligenblut / Lienz → Felbertauern → Achensee / Alpbach</h3>
+          <div class="meta">~210 ק״מ · רכיבה נטו 4–5 שעות · יום נוף רגוע</div>
+          <p style="margin: 8px 0; font-size: 14px;">עולים צפונה דרך מנהרת Felbertauern (€11), חוזרים לעמק Pinzgau, ממשיכים דרך Krimml/Mittersill וחוזרים ל-Inn Valley. אופציה לעצור ב-Alpbach (אחד הכפרים היפים בטירול, ארכיטקטורת עץ קלאסית). לינה במלון ספא מפנק לקראת סוף הטיול.</p>
+          <div class="kv"><b>עצירות מומלצות:</b> Felbertauern viewpoint · Alpbach village · Achensee Pertisau (אם בוחרים אגם)</div>
+          <div class="kv"><b>לינה (פרימיום):</b> Alpbacherhof Mountain & Spa Resort (4★S, ספא 1,600m²) או Das Karwendel באכנזה</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="day-strip">
+        <div class="day-num"><div class="d">5</div><div class="l">ב׳ 15.6</div></div>
+        <div>
+          <h3>Alpbach / Achensee → Munich Airport — סגירה</h3>
+          <div class="meta">~120 ק״מ · רכיבה נטו 1.5–2.5 שעות · קל ונוח</div>
+          <p style="margin: 8px 0; font-size: 14px;">ארוחת בוקר רגועה, יציאה צפונה. אם זמן מאפשר — עצירה אחרונה ב-Tegernsee. מילוי דלק לפני החזרה, החזרת אופנועים במינכן, ואז שדה התעופה. תכננו 2 שעות buffer בין החזרה לטיסה.</p>
+          <div class="kv"><b>טיפ:</b> תאם עם Rent-a-Boxer החזרה בין 10:00–12:00 כדי שתישאר זמן נוח לשדה.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>סיכום מצטבר</h3>
+      <table>
+        <tr><th>יום</th><th>מסלול</th><th>ק״מ</th><th>רכיבה נטו</th><th>אגרות</th></tr>
+        <tr><td>1</td><td>Munich → St. Johann</td><td class="num">~180</td><td>2.5–3.5h</td><td>—</td></tr>
+        <tr><td>2</td><td>St. Johann → Kaprun</td><td class="num">~150</td><td>3–4h</td><td>Gerlos €9</td></tr>
+        <tr><td>3</td><td>Kaprun → Heiligenblut</td><td class="num">~110</td><td>3.5–5h</td><td>Grossglockner €36.50</td></tr>
+        <tr><td>4</td><td>Heiligenblut → Alpbach</td><td class="num">~210</td><td>4–5h</td><td>Felbertauern ~€11</td></tr>
+        <tr><td>5</td><td>Alpbach → Munich</td><td class="num">~120</td><td>1.5–2.5h</td><td>—</td></tr>
+        <tr><th>סה״כ</th><td></td><td class="num">~770</td><td>~17h</td><td>~€57/רוכב</td></tr>
+      </table>
+    </div>
+  </section>
+
+  <!-- BIKES -->
+  <section class="panel" id="bikes">
+    <div class="hot-tip">
+      רק Rent-a-Boxer אישרו זמינות (3×R 1300 GS). Bike-Travel-Service עוד לא ענו (שלחת 2.6). שאר הספקים עדיין לא נוצר איתם קשר — יש לך טיוטות מוכנות בלשונית "טיוטות מייל".
+    </div>
+
+    <div class="card">
+      <h3>Rent-a-Boxer <span class="tag win">אישרו זמינות</span></h3>
+      <div class="meta">מיקום: מינכן · תכתובת אחרונה: 2.6.2026 11:31</div>
+      <p style="margin: 8px 0; font-size: 14px;">"I would be happy to offer you three BMW R 1300 GS motorcycles. Please find here the address of our Munich location. The distance to the airport is…" — צריך לקרוא את ההודעה המלאה בתיבה שלך כדי לראות מחיר/ביטוח/פיקדון. בטיוטות יש לך מייל follow-up מוכן.</p>
+      <div class="kv"><b>הפחתת השתתפות:</b> ל-€300 תמורת €12.90/יום (לפי האתר)</div>
+      <div class="kv"><b>שעות:</b> לבדוק במייל המקורי</div>
+      <a class="pill-link" href="https://rent-a-boxer.com/en" target="_blank">אתר</a>
+      <a class="pill-link ghost" href="https://mail.google.com/mail/u/0/#search/rent-a-boxer" target="_blank">פתח את התכתובת ב-Gmail</a>
+    </div>
+
+    <div class="card">
+      <h3>Bike Travel Service (BMW Motorrad Center Munich) <span class="tag warn">ממתינים לתשובה</span></h3>
+      <div class="meta">מיקום: ליד BMW Motorrad Center במינכן · נשלח: 2.6.2026 06:04</div>
+      <p style="margin: 8px 0; font-size: 14px;">המייל המקורי נשלח ב-2 ביוני ועדיין אין תשובה. בטיוטות יש לך מייל follow-up מוכן לשליחה אם רוצה לזרז.</p>
+      <a class="pill-link" href="https://www.bike-travel-service.de/en/menue-motorraeder/pricelist" target="_blank">מחירון</a>
+    </div>
+
+    <div class="card">
+      <h3>MotoRoads Munich Airport <span class="tag info">טיוטה מוכנה</span></h3>
+      <div class="meta">מיקום: Munich Airport (יתרון — איסוף/החזרה ליד שדה)</div>
+      <p style="margin: 8px 0; font-size: 14px;">לפי האתר: 2025 BMW 1300 GS ADV UNLIMITED ב-€105/יום. איסוף במינכן Airport, 24/7. עדיין צריך לאשר זמינות 3 יחידות באותם תאריכים. טיוטה מוכנה ל-info@motoroads.com.</p>
+      <a class="pill-link" href="https://www.motoroads.com/munich-2024-bmw-1300-gs-motorcycle-rental-germany-2052.aspx" target="_blank">דף הדגם</a>
+    </div>
+
+    <div class="card">
+      <h3>EagleRider Munich Airport <span class="tag info">טיוטה מוכנה</span></h3>
+      <div class="meta">מיקום: Munich Airport · rent@eaglerider.com / +49 6102-8847-9180</div>
+      <p style="margin: 8px 0; font-size: 14px;">מחיר R 1300 GS Adventure בערך $244–248/יום לפי דפי אתר באירופה. גיבוי טוב. טיוטה מוכנה.</p>
+      <a class="pill-link" href="https://www.eaglerider.com/bmw-motorcycle-rental/muc-munich-airport" target="_blank">דף השדה</a>
+    </div>
+
+    <div class="card">
+      <h3>Riderly Munich <span class="tag gray">דרך טופס באתר</span></h3>
+      <div class="meta">מצרף הזמנות מספקים מקומיים. ביטול חינם בחלק מההזמנות.</div>
+      <p style="margin: 8px 0; font-size: 14px;">Riderly לא מפרסמים אימייל ישיר — צריך לפנות דרך הטופס שלהם או אונליין. כדאי לבדוק שם זמינות BMW R 1300 GS, אבל פחות מתאים לפנייה בנוסח שלנו.</p>
+      <a class="pill-link" href="https://riderly.com/motorcycle-rental-munchen/" target="_blank">חיפוש במינכן</a>
+      <a class="pill-link ghost" href="https://riderly.com/contact-us/" target="_blank">טופס יצירת קשר</a>
+    </div>
+
+    <div class="card">
+      <h3>השוואת ספקים</h3>
+      <table>
+        <tr><th>ספק</th><th>סטטוס</th><th>מחיר משוער/יום</th><th>איסוף</th><th>הערות</th></tr>
+        <tr><td>Rent-a-Boxer</td><td><span class="tag win">אישרו 3 GS</span></td><td>לבדוק במייל</td><td>מינכן (לא בשדה)</td><td>הכי קרוב לסגירה</td></tr>
+        <tr><td>Bike Travel Service</td><td><span class="tag warn">ממתינים</span></td><td>~€160+/יום</td><td>BMW Center Munich</td><td>איכות, BMW מקורי</td></tr>
+        <tr><td>MotoRoads</td><td><span class="tag info">טיוטה</span></td><td>€105/יום (2025 GS)</td><td>Munich Airport ✓</td><td>זול וקרוב לשדה</td></tr>
+        <tr><td>EagleRider</td><td><span class="tag info">טיוטה</span></td><td>~€220+/יום</td><td>Munich Airport ✓</td><td>גיבוי מותג גלובלי</td></tr>
+        <tr><td>Riderly</td><td><span class="tag gray">טופס</span></td><td>משתנה</td><td>מינכן</td><td>מצרף, ביטול חינם</td></tr>
+      </table>
+    </div>
+  </section>
+
+  <!-- HOTELS -->
+  <section class="panel" id="hotels">
+    <div class="card">
+      <h3>לילה 1 — חמ׳ 11.6 — St. Johann in Tirol / Kitzbühel</h3>
+      <div class="row">
+        <div>
+          <b>Hotel Park, St. Johann in Tirol</b>
+          <div class="kv"><b>טל׳:</b> +43 5352 622 26</div>
+          <div class="kv"><b>חניה:</b> חניה חינמית</div>
+          <div class="kv"><b>אופי:</b> משפחתי, מרכזי, שקט</div>
+          <a class="pill-link ghost" href="https://www.park.at" target="_blank">אתר</a>
+        </div>
+        <div>
+          <b>Explorer Hotel Kitzbühel (St. Johann)</b>
+          <div class="kv"><b>אופי:</b> מודרני, מותאם לספורט וביקרים</div>
+          <div class="kv"><b>חניה:</b> פרטית בתשלום + מחסן מאובטח לאופניים/אופנועים</div>
+          <a class="pill-link ghost" href="https://www.explorer-hotels.com/en/kitzbuehel/" target="_blank">אתר</a>
+        </div>
+        <div>
+          <b>Alpengasthof Hirschberg</b>
+          <div class="kv"><b>אופי:</b> Gasthof כפרי, פחות תיירותי</div>
+          <a class="pill-link ghost" href="https://www.kitzbueheler-alpen.com/en/st-johann-in-tirol/" target="_blank">חיפוש באזור</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>לילה 2 — שי׳ 12.6 — Kaprun / Zell am See <span class="tag win">טיוטה נשלחה ל-Vötter's</span></h3>
+      <div class="row">
+        <div>
+          <b>Vötter's Hotel Kaprun ★ MoHo 4 Helmets</b>
+          <div class="kv"><b>אימייל:</b> info@voetterskaprun.com</div>
+          <div class="kv"><b>טל׳:</b> +43 6547 71340</div>
+          <div class="kv"><b>חניה:</b> מקורה לאופנועים + פינת כלים + ייבוש</div>
+          <div class="kv"><b>בונוס:</b> Bike Info Corner + Calimoto Premium לאורחים</div>
+          <a class="pill-link ghost" href="https://www.sport-kristall.at/en/motorcycle/" target="_blank">דף הביקר</a>
+        </div>
+        <div>
+          <b>Hotel Sonnblick, Kaprun</b>
+          <div class="kv"><b>אופי:</b> 4★, בין Zeller See ל-Kitzsteinhorn</div>
+          <a class="pill-link ghost" href="https://www.hotel-sonnblick.at/en/" target="_blank">אתר</a>
+        </div>
+        <div>
+          <b>Hotel Grüner Baum, Zell am See</b>
+          <div class="kv"><b>אופי:</b> במרכז Zell am See, חניה תת-קרקעית נעולה בלילה</div>
+          <a class="pill-link ghost" href="https://www.gruener-baum.at/en/" target="_blank">אתר</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>לילה 3 — שב׳ 13.6 — Heiligenblut / Lienz <span class="tag win">טיוטה נשלחה ל-Iselsbergerhof</span></h3>
+      <div class="row">
+        <div>
+          <b>Iselsbergerhof (Lienz/Iselsberg)</b>
+          <div class="kv"><b>אימייל:</b> hotel@iselsbergerhof.at</div>
+          <div class="kv"><b>טל׳:</b> +43 4852 64112</div>
+          <div class="kv"><b>אופי:</b> Motorradhotel קלאסי מ-1987, גובה 1,204m, נוף ל-Lienzer Dolomiten</div>
+          <div class="kv"><b>חניה:</b> חניון + ורקשופ + חדר ייבוש</div>
+        </div>
+        <div>
+          <b>Sporthotel Heiligenblut</b>
+          <div class="kv"><b>טל׳:</b> +43 4824 4111</div>
+          <div class="kv"><b>אופי:</b> 4★, ב-Heiligenblut עצמה, "Bikers Point" עם חניה שמורה ב-Edelweiss Peak</div>
+          <div class="kv"><b>בונוס:</b> Biker Safes חינם להחזקת קסדות/ז׳קטים ב-Kaiser-Franz-Josefs-Höhe</div>
+          <a class="pill-link ghost" href="https://hotel-heiligenblut.at/en/" target="_blank">אתר</a>
+        </div>
+        <div>
+          <b>Hotel Sonne Lienz</b>
+          <div class="kv"><b>טל׳:</b> +43 485 263 311</div>
+          <div class="kv"><b>אופי:</b> בעיר העתיקה של Lienz, חניה תת-קרקעית חינם לרוכבים, סאונה, מרפסת גג</div>
+          <a class="pill-link ghost" href="https://www.hotelsonnelienz.at/en/" target="_blank">אתר</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>לילה 4 — א׳ 14.6 — Alpbach / Achensee <span class="tag win">טיוטה נשלחה ל-Alpbacherhof</span></h3>
+      <div class="row">
+        <div>
+          <b>Mountain & Spa Resort Alpbacherhof ★ 4★S</b>
+          <div class="kv"><b>אימייל:</b> hotel@alpbacherhof.at</div>
+          <div class="kv"><b>טל׳:</b> +43 5336 5237</div>
+          <div class="kv"><b>אופי:</b> ספא 1,600m², 17 חוויות סאונה/רחצה, פנורמה, חצי פנסיון</div>
+          <div class="kv"><b>למה הוא:</b> סיום מפנק בכפר Alpbach (אחד היפים בטירול)</div>
+          <a class="pill-link ghost" href="https://alpbacherhof.at/en/home/" target="_blank">אתר</a>
+        </div>
+        <div>
+          <b>Das Karwendel, Achensee</b>
+          <div class="kv"><b>אופי:</b> מלון ספא ראשון במעלה על אגם אכן</div>
+          <a class="pill-link ghost" href="https://www.karwendel-achensee.com/en/" target="_blank">אתר</a>
+        </div>
+        <div>
+          <b>Hotel Entners am See, Achensee</b>
+          <div class="kv"><b>אופי:</b> ספא על האגם, חוף פרטי</div>
+          <a class="pill-link ghost" href="https://www.entners.at/en/" target="_blank">אתר</a>
+        </div>
+        <div>
+          <b>Wellnessresidenz Alpenrose, Achenkirch</b>
+          <div class="kv"><b>אופי:</b> ספא 8,500m² — הכי גדול באזור אכן</div>
+          <a class="pill-link ghost" href="https://www.luxurysparesorts.com/en/spa-hotels/hotel-5798-wellnessresidenz-alpenrose.html" target="_blank">פרטים</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- DRAFTS -->
+  <section class="panel" id="drafts">
+    <div class="hot-tip">
+      <b>חשוב:</b> כל הטיוטות נשמרו ב-Gmail ⇒ Drafts. <u>שום מייל לא נשלח אוטומטית.</u> תפתח כל אחד, תקרא, ערוך לפי הצורך ושלח כשתחליט.
+    </div>
+
+    <details open>
+      <summary>1. Rent-a-Boxer — Follow-up עם בקשה לפרטים סופיים (תגובה לתכתובת קיימת)</summary>
+      <pre class="email">To: info@rent-a-boxer.com
+Subject: Re: AW: Thanks for contacting us! — Bar Snapir, 11–15 June 2026
+
+Thank you for the quick reply and for confirming availability of three BMW R 1300 GS for our trip on 11–15 June 2026.
+
+We are very interested in moving forward. Before we confirm and pay the deposit, could you please send a short written summary with:
+1. Total price per bike for the full rental period
+2. What is included (panniers, top case, helmet/jacket, taxes)
+3. Insurance & deductible (base + reduce option cost/day)
+4. Mileage limit and cost per extra km
+5. Security deposit per bike
+6. Pickup/return hours Thu 11.6 and Mon 15.6, exact address, distance from MUC
+7. Cross-border permission Austria
+8. Cancellation policy
+
+We are waiting on final flight confirmation but will lock with you as soon as that's in place. Could you put a soft hold on the three GS until then?
+
+Thank you,
+Bar Snapir</pre>
+    </details>
+
+    <details>
+      <summary>2. Bike-Travel-Service — Follow-up (לא ענו עדיין)</summary>
+      <pre class="email">To: motorradmiete@bike-travel-service.de
+Subject: Follow-up: 3x BMW R 1300 GS / GS Adventure — 11–15 June 2026
+
+Following up on my inquiry from 2 June — we are 3 experienced riders from Israel and would like to confirm availability of 3 premium Adventure motorcycles for our short Alpine trip…
+(טקסט מלא בטיוטה ב-Gmail)</pre>
+    </details>
+
+    <details>
+      <summary>3. EagleRider Munich Airport — פנייה ראשונית</summary>
+      <pre class="email">To: rent@eaglerider.com
+Subject: 3x BMW R 1300 GS rental — Munich / Munich Airport — 11–15 June 2026
+
+We are 3 experienced riders from Israel planning a short Alpine Adventure trip…
+(טקסט מלא בטיוטה ב-Gmail)</pre>
+    </details>
+
+    <details>
+      <summary>4. MotoRoads Munich Airport — פנייה ראשונית</summary>
+      <pre class="email">To: info@motoroads.com
+Subject: 3x BMW R 1300 GS — Munich Airport — 11–15 June 2026
+
+We are 3 experienced riders from Israel planning a short Alpine Adventure trip from Munich…
+(טקסט מלא בטיוטה ב-Gmail)</pre>
+    </details>
+
+    <details>
+      <summary>5. Vötter's Hotel Kaprun — לילה 2 (12.6)</summary>
+      <pre class="email">To: info@voetterskaprun.com
+Subject: 3 riders — 1 night with motorcycle parking — Friday 12 June 2026
+
+We are 3 experienced riders from Israel planning a short Alpine motorcycle trip…
+Date: Friday, 12 June 2026 (one night, check-out Sat 13 June)
+- Triple room or 3 singles
+- Covered parking for 3 motorcycles
+- Breakfast included
+(טקסט מלא בטיוטה ב-Gmail)</pre>
+    </details>
+
+    <details>
+      <summary>6. Iselsbergerhof — לילה 3 (13.6)</summary>
+      <pre class="email">To: hotel@iselsbergerhof.at
+Subject: 3 riders — 1 night with motorcycle garage — Saturday 13 June 2026
+
+We are 3 experienced riders doing the Grossglockner — Lienz area on BMW R 1300 GS…
+Date: Saturday, 13 June 2026
+- Triple room or 3 singles
+- Garage / safe parking for 3 motorcycles
+(טקסט מלא בטיוטה ב-Gmail)</pre>
+    </details>
+
+    <details>
+      <summary>7. Alpbacherhof — לילה 4 (14.6) · המלון המפנק לסיום</summary>
+      <pre class="email">To: hotel@alpbacherhof.at
+Subject: 3 guests — 1 night, last night of motorcycle trip — Sunday 14 June 2026
+
+Date: Sunday, 14 June 2026 (one night, check-out Mon 15 June — early morning departure to Munich Airport)
+- 3 adults, advise on best room arrangement
+- Spa / wellness access
+- Dinner at hotel
+- Safe parking for 3 motorcycles
+- Early check-out
+(טקסט מלא בטיוטה ב-Gmail)</pre>
+    </details>
+
+    <a class="pill-link" href="https://mail.google.com/mail/u/0/#drafts" target="_blank">פתח את תיקיית הטיוטות ב-Gmail</a>
+  </section>
+
+  <!-- COSTS -->
+  <section class="panel" id="costs">
+    <div class="card">
+      <h3>אומדן עלות לרוכב (5 ימים, לא כולל טיסה)</h3>
+      <table>
+        <tr><th>פריט</th><th>מינימום</th><th>מקסימום</th><th>הערות</th></tr>
+        <tr><td>השכרת אופנוע (4–5 ימים)</td><td class="num">€650</td><td class="num">€900</td><td>תלוי בדגם וספק</td></tr>
+        <tr><td>ביטוחים והפחתת השתתפות</td><td class="num">€100</td><td class="num">€250</td><td>~€13/יום לרידוקציה ב-Rent-a-Boxer</td></tr>
+        <tr><td>מלונות (חלק לכל רוכב מ-4 לילות)</td><td class="num">€350</td><td class="num">€700</td><td>גבוה יותר עם Alpbacherhof בסוף</td></tr>
+        <tr><td>דלק + אגרות + אוכל</td><td class="num">€350</td><td class="num">€650</td><td>אגרות אלפיניות ~€57/רוכב</td></tr>
+        <tr><th>סה״כ לרוכב</th><td class="num">€1,450</td><td class="num">€2,500</td><td>בלי טיסה</td></tr>
+        <tr><th>סה״כ ל-3 רוכבים</th><td class="num">€4,350</td><td class="num">€7,500</td><td>בלי טיסה</td></tr>
+      </table>
+    </div>
+
+    <div class="card">
+      <h3>אגרות אלפיניות (יחיד)</h3>
+      <table>
+        <tr><th>אגרה</th><th>מחיר אופנוע</th><th>הערה</th></tr>
+        <tr><td>Grossglockner High Alpine Road (יום)</td><td class="num">€36.50</td><td>€33.50 אם קונים מראש ב-Heiligenblut Info Center</td></tr>
+        <tr><td>Gerlos Alpenstraße (יום)</td><td class="num">€9.00</td><td>שנתי €67.50</td></tr>
+        <tr><td>Felbertauern Tunnel (אופנוע)</td><td class="num">~€11</td><td>כיוון אחד</td></tr>
+        <tr><th>סה״כ צפוי</th><td class="num">~€57</td><td>לכל רוכב</td></tr>
+      </table>
+    </div>
+  </section>
+
+  <!-- INFO -->
+  <section class="panel" id="info">
+    <div class="card">
+      <h3>מצב כבישים אלפיניים — יוני 2026</h3>
+      <div class="kv"><b>Grossglockner Hochalpenstraße:</b> פתוח מתחילת מאי עד תחילת נובמבר. שעות יוני: 5:30–21:00. ב-יוני 2026 צפוי להיות פתוח לחלוטין כולל כל ה-viewpoints. <span class="tag win">פתוח</span></div>
+      <div class="kv"><b>Gerlos Alpenstraße:</b> פתוח 365/שנה. <span class="tag win">פתוח</span></div>
+      <div class="kv"><b>Felbertauern Tunnel:</b> פתוח שנה עגולה. <span class="tag win">פתוח</span></div>
+      <div class="kv"><b>Krimml Wasserfälle:</b> פתוח 1.5–31.10, יום-יום 9:00–17:00. <span class="tag win">פתוח</span></div>
+      <div class="kv"><b>Sigmund Thun Klamm:</b> פתוח מתחילת מאי, יום-יום 9:00–17:30. <span class="tag win">פתוח</span></div>
+    </div>
+
+    <div class="card">
+      <h3>מסמכים ודרישות</h3>
+      <div class="kv"><b>רישיון:</b> ישראלי + בינ״ל (IDP) — חובה להוציא לפני הטיסה.</div>
+      <div class="kv"><b>מעבר גבול גרמניה–אוסטריה:</b> חייב להופיע במסמכי השכרה. תוודא שזה ברשימה אצל הספק.</div>
+      <div class="kv"><b>Vignette אוסטריה:</b> לאופנועים אין חובת ויניטה (רק לרכבים מעל 3.5T). אגרות פרטיות בלבד על כבישים אלפיניים.</div>
+      <div class="kv"><b>ביגוד:</b> חובה קסדה. ז׳קט עם הגנות, כפפות, מגפיים — מומלץ. תוודא מה כלול אצל הספק (חלק נותנים פריט אחד בלבד).</div>
+    </div>
+
+    <div class="card">
+      <h3>לוגיסטיקה מינכן ⇄ שדה תעופה</h3>
+      <div class="kv"><b>שדה התעופה (MUC) ↔ מינכן עיר:</b> S-Bahn S1/S8, ~45 דק׳, €13.</div>
+      <div class="kv"><b>Rent-a-Boxer:</b> מיקום במינכן עיר. צריך נסיעת S-Bahn מהשדה לאיסוף ביום חמישי, וחזרה ביום שני.</div>
+      <div class="kv"><b>MotoRoads / EagleRider:</b> שניהם בשדה — חוסך נסיעה והלוך-חזור.</div>
+      <div class="kv"><b>טיפ אופציונלי:</b> אם בוחרים ספק במינכן עיר ולא בשדה — ביום שני תכננו החזרה עד 11:00 → ארוחת צהריים → S-Bahn → טיסה אחר הצהריים.</div>
+    </div>
+
+    <div class="card">
+      <h3>מה הלאה</h3>
+      <ol style="font-size: 14px; line-height: 1.8;">
+        <li>תקרא את התשובה המלאה של Rent-a-Boxer (פתח את התכתובת ב-Gmail).</li>
+        <li>אם המחיר/תנאים מתאימים — שלח את הטיוטה (Follow-up #1) לסגירה רכה.</li>
+        <li>אם רוצה להשוות הצעות — שלח את הטיוטות לבלקאפ (EagleRider, MotoRoads), ועצור Bike-Travel-Service אם רק רוצה תשובה אחת.</li>
+        <li>סגור טיסות, ואז:</li>
+        <li>שלח את 3 מיילי המלונות (Vötter's, Iselsbergerhof, Alpbacherhof) לסגירה.</li>
+        <li>הוסף ללילה 1 הזמנה ב-Booking ל-St. Johann / Kitzbühel (Hotel Park או Explorer) — קצר ופשוט יותר ממייל.</li>
+      </ol>
+    </div>
+  </section>
+
+  <footer>
+    מעודכן ל-3.6.2026 · נתונים מ-Gmail, אתרי ספקים, Grossglockner.at, Gerlosstrasse.at, Krimmler-Wasserwelten.at, Klamm-Kaprun.at
+  </footer>
+</div>
+
+<script>
+  document.querySelectorAll('.tabs button').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const tab = btn.dataset.tab;
+      document.querySelectorAll('.tabs button').forEach(b => b.classList.toggle('active', b === btn));
+      document.querySelectorAll('section.panel').forEach(s => s.classList.toggle('active', s.id === tab));
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+  });
+</script>
+</body>
+</html>
